@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../api/api";
 
-import Codex from "../assets/Codex.jpg";
-import Gstudio from "../assets/Gstudio.jpg";
-import Starbursts from "../assets/Starbursts.jpg";
-
 
 function ClubDetails() {
 
@@ -20,94 +16,43 @@ function ClubDetails() {
 
 
 
+  useEffect(() => {
 
 
-  useEffect(()=>{
-
-
-    console.log("Club ID:",id);
-
+    console.log("Club ID:", id);
 
 
     api
+      .get(`/api/clubs/${id}`)
 
-    .get(`/api/clubs/${id}`)
+      .then((res) => {
 
-    .then((res)=>{
+        console.log("Club Data:", res.data);
 
+        setClub(res.data);
 
-      console.log("Club Data:",res.data);
+      })
 
+      .catch((err) => {
 
-      setClub(res.data);
+        console.log("API Error:", err);
 
+        setError("Club details not found");
 
-    })
-
-    .catch((err)=>{
-
-
-      console.log("API Error:",err);
-
-
-      setError("Club details not found");
+      });
 
 
-    });
-
-
-
-  },[id]);
+  }, [id]);
 
 
 
 
 
+  function getImage(image) {
 
-
-
-
-  function getImage(image){
-
-
-
-    if(!image){
-
-      return Codex;
-
-    }
-
-
-
-
-    if(image.includes("Codex")){
-
-      return Codex;
-
-    }
-
-
-
-    if(image.includes("Gstudio")){
-
-      return Gstudio;
-
-    }
-
-
-
-    if(image.includes("Starbursts")){
-
-      return Starbursts;
-
-    }
-
-
-
-
-
-    return `http://localhost:3001/uploads/${image}`;
-
+    return image
+      ? `https://club-recruitment.onrender.com/uploads/${image}`
+      : "https://via.placeholder.com/300";
 
   }
 
@@ -116,17 +61,12 @@ function ClubDetails() {
 
 
 
+  if (error) {
 
 
-
-  if(error){
-
-
-    return(
-
+    return (
 
       <div className="container mt-5 text-center">
-
 
         <div className="alert alert-danger">
 
@@ -135,14 +75,9 @@ function ClubDetails() {
         </div>
 
 
-
-
         <Link
-
           to="/"
-
           className="btn btn-primary"
-
         >
 
           Go Back
@@ -150,12 +85,9 @@ function ClubDetails() {
         </Link>
 
 
-
       </div>
 
-
     );
-
 
   }
 
@@ -165,29 +97,20 @@ function ClubDetails() {
 
 
 
+  if (!club) {
 
-  if(!club){
 
-
-    return(
-
+    return (
 
       <div className="container mt-5 text-center">
 
-
         <h3>
-
           Loading Club Details...
-
         </h3>
-
-
 
       </div>
 
-
     );
-
 
   }
 
@@ -196,306 +119,202 @@ function ClubDetails() {
 
 
 
+  return (
 
+    <div className="container mt-5 mb-5">
 
-  return(
 
+      <div className="card shadow-lg border-0 rounded-4 overflow-hidden">
 
 
-<div className="container mt-5 mb-5">
 
+        <img
 
+          src={getImage(club.image)}
 
+          alt={club.clubName}
 
+          className="card-img-top"
 
+          style={{
 
-<div className="card shadow-lg border-0 rounded-4 overflow-hidden">
+            height: "350px",
 
+            width: "100%",
 
+            objectFit: "cover"
 
+          }}
 
+        />
 
 
-<img
 
 
-src={getImage(club.image)}
 
+        <div className="card-body p-5">
 
-alt={club.clubName}
 
 
-className="card-img-top"
+          <h1 className="fw-bold text-primary">
 
+            {club.clubName}
 
+          </h1>
 
-style={{
 
 
-height:"350px",
 
 
-width:"100%",
+          <p className="mt-3 fs-5 text-muted">
 
+            {club.description}
 
-objectFit:"cover"
+          </p>
 
 
-}}
 
 
 
-/>
+          <hr />
 
 
 
 
 
+          <div className="row mt-4">
 
 
 
+            <div className="col-md-6">
 
-<div className="card-body p-5">
 
+              <h5>
+                👨‍🏫 Faculty
+              </h5>
 
 
+              <p>
+                {club.faculty}
+              </p>
 
 
-<h1 className="fw-bold text-primary">
+            </div>
 
-{club.clubName}
 
-</h1>
 
 
 
+            <div className="col-md-6">
 
 
+              <h5>
+                📌 Recruitment Status
+              </h5>
 
 
-<p className="mt-3 fs-5 text-muted">
 
-{club.description}
 
-</p>
+              {
 
+                club.recruitmentOpen ?
 
 
+                <span className="badge bg-success fs-6">
 
+                  Recruitment Open
 
+                </span>
 
 
-<hr/>
+                :
 
 
+                <span className="badge bg-danger fs-6">
 
+                  Recruitment Closed
 
+                </span>
 
+              }
 
 
 
+            </div>
 
-<div className="row mt-4">
 
+          </div>
 
 
 
 
 
-<div className="col-md-6">
 
+          <div className="mt-5">
 
 
-<h5>
 
-👨‍🏫 Faculty
+            {
 
-</h5>
+              club.recruitmentOpen &&
 
 
+              <Link
 
+                to="/apply"
 
-<p>
+                state={{
 
-{club.faculty}
+                  clubName: club.clubName
 
-</p>
+                }}
 
+                className="btn btn-primary me-3"
 
+              >
 
-</div>
+                Apply Now
 
+              </Link>
 
 
+            }
 
 
 
 
 
 
-<div className="col-md-6">
+            <Link
 
+              to="/"
 
+              className="btn btn-secondary"
 
-<h5>
+            >
 
-📌 Recruitment Status
+              Back To Clubs
 
-</h5>
+            </Link>
 
 
 
 
+          </div>
 
 
 
-{
 
-club.recruitmentOpen ?
 
+        </div>
 
-<span className="badge bg-success fs-6">
 
-Recruitment Open
 
-</span>
+      </div>
 
 
 
-:
-
-
-<span className="badge bg-danger fs-6">
-
-Recruitment Closed
-
-</span>
-
-
-}
-
-
-
-
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div className="mt-5">
-
-
-
-
-
-
-
-{
-
-club.recruitmentOpen &&
-
-
-
-<Link
-
-
-to="/apply"
-
-
-state={{
-
-
-clubName:club.clubName
-
-
-}}
-
-
-className="btn btn-primary me-3"
-
-
-
->
-
-
-Apply Now
-
-
-</Link>
-
-
-
-}
-
-
-
-
-
-
-
-
-
-<Link
-
-
-to="/"
-
-
-className="btn btn-secondary"
-
-
->
-
-
-Back To Clubs
-
-
-</Link>
-
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-</div>
-
-
-
-
-
-
-</div>
-
-
-
-
-
-
-</div>
-
-
+    </div>
 
 
   );

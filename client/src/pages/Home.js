@@ -3,396 +3,276 @@ import api from "../api/api";
 
 import ClubCard from "../components/ClubCard";
 
-import Codex from "../assets/Codex.jpg";
-import Gstudio from "../assets/Gstudio.jpg";
-import Starbursts from "../assets/Starbursts.jpg";
-
 import "./Home.css";
 
 
-function Home(){
+function Home() {
 
 
-const [clubs,setClubs] = useState([]);
+  const [clubs, setClubs] = useState([]);
 
 
 
+  useEffect(() => {
 
+    api
+      .get("/api/clubs")
 
-useEffect(()=>{
+      .then((res) => {
 
+        setClubs(res.data);
 
-  api
-  .get("/api/clubs")
+      })
 
-  .then((res)=>{
+      .catch((err) => {
 
-    setClubs(res.data);
+        console.log(err);
 
-  })
+      });
 
-  .catch((err)=>{
 
-    console.log(err);
+  }, []);
 
-  });
 
 
-},[]);
 
+  return (
 
+    <div>
 
 
 
+      {/* Hero Section */}
 
-function getImage(image){
+      <section className="hero-section">
 
 
-  if(image==="Codex.jpg"){
+        <div className="hero-content">
 
-    return Codex;
 
-  }
+          <h1>
+            Discover Your College Clubs 🎓
+          </h1>
 
 
-  if(image==="Gstudio.jpg"){
+          <p>
+            Join clubs, build skills, explore your interests and connect with talented students.
+          </p>
 
-    return Gstudio;
 
-  }
+          <a
+            href="#clubs"
+            className="btn btn-primary btn-lg"
+          >
+            Explore Clubs
+          </a>
 
 
-  if(image==="Starbursts.jpg"){
+        </div>
 
-    return Starbursts;
 
-  }
+      </section>
 
 
-  return `http://localhost:3001/uploads/${image}`;
 
 
-}
 
 
+      {/* Clubs Section */}
 
 
+      <section
+        id="clubs"
+        className="container mt-5"
+      >
 
 
+        <h1 className="text-center fw-bold mb-5">
+          Available Clubs
+        </h1>
 
-return(
 
 
-<div>
 
 
+        <div className="row">
 
-{/* Hero Section */}
 
-<section className="hero-section">
+          {
+            clubs.length === 0 ?
 
 
-<div className="hero-content">
+            (
 
+              <div className="text-center">
 
-<h1>
+                <h4>
+                  No Clubs Available
+                </h4>
 
-Discover Your College Clubs 🎓
+              </div>
 
-</h1>
+            )
 
 
+            :
 
-<p>
 
-Join clubs, build skills, explore your interests and connect with talented students.
+            clubs.map((club) => (
 
-</p>
 
+              <div
+                className="col-lg-4 col-md-6 mb-4"
+                key={club._id}
+              >
 
 
-<a
+                <div className="club-wrapper">
 
-href="#clubs"
 
-className="btn btn-primary btn-lg"
+                  <ClubCard
 
->
+                    image={club.image}
 
-Explore Clubs
+                    title={club.clubName}
 
-</a>
+                    description={club.description}
 
+                    id={club._id}
 
-</div>
+                  />
 
 
-</section>
 
+                  {
+                    club.recruitmentOpen ?
 
 
+                    <span className="status-open">
+                      ● Recruitment Open
+                    </span>
 
 
+                    :
 
 
+                    <span className="status-close">
+                      ● Recruitment Closed
+                    </span>
 
+                  }
 
-{/* Clubs Section */}
 
 
-<section
+                </div>
 
-id="clubs"
 
-className="container mt-5"
+              </div>
 
->
 
+            ))
 
-<h1 className="text-center fw-bold mb-5">
 
-Available Clubs
+          }
 
-</h1>
 
+        </div>
 
 
+      </section>
 
 
-<div className="row">
 
 
-{
 
-clubs.length===0 ?
 
+      {/* Why Join Section */}
 
-(
 
-<div className="text-center">
+      <section className="why-section">
 
 
-<h4>
+        <h2 className="text-center fw-bold mb-4">
+          Why Join Clubs?
+        </h2>
 
-No Clubs Available
 
-</h4>
 
 
-</div>
+        <div className="row container mx-auto">
 
-)
 
 
-:
+          <div className="col-md-4">
 
+            <div className="feature-card">
 
-clubs.map((club)=>(
+              <h3>
+                🚀 Skills
+              </h3>
 
+              <p>
+                Improve technical and creative skills through practical activities.
+              </p>
 
-<div
+            </div>
 
-className="col-lg-4 col-md-6 mb-4"
+          </div>
 
-key={club._id}
 
->
 
 
-<div className="club-wrapper">
 
+          <div className="col-md-4">
 
-<ClubCard
+            <div className="feature-card">
 
+              <h3>
+                🤝 Network
+              </h3>
 
-image={getImage(club.image)}
+              <p>
+                Meet students and work together on exciting projects.
+              </p>
 
+            </div>
 
-title={club.clubName}
+          </div>
 
 
-description={club.description}
 
 
-id={club._id}
 
+          <div className="col-md-4">
 
-/>
+            <div className="feature-card">
 
+              <h3>
+                🎯 Experience
+              </h3>
 
-{
+              <p>
+                Gain experience for internships and future careers.
+              </p>
 
-club.recruitmentOpen ?
+            </div>
 
+          </div>
 
-<span className="status-open">
 
-● Recruitment Open
 
-</span>
+        </div>
 
 
-:
+      </section>
 
 
-<span className="status-close">
 
-● Recruitment Closed
 
-</span>
 
+    </div>
 
-}
-
-
-
-</div>
-
-
-
-</div>
-
-
-))
-
-
-}
-
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-
-
-{/* Why Join Section */}
-
-
-<section className="why-section">
-
-
-<h2 className="text-center fw-bold mb-4">
-
-Why Join Clubs?
-
-</h2>
-
-
-
-
-<div className="row container mx-auto">
-
-
-
-<div className="col-md-4">
-
-
-<div className="feature-card">
-
-
-<h3>
-
-🚀 Skills
-
-</h3>
-
-
-<p>
-
-Improve technical and creative skills through practical activities.
-
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-<div className="col-md-4">
-
-
-<div className="feature-card">
-
-
-<h3>
-
-🤝 Network
-
-</h3>
-
-
-<p>
-
-Meet students and work together on exciting projects.
-
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-<div className="col-md-4">
-
-
-<div className="feature-card">
-
-
-<h3>
-
-🎯 Experience
-
-</h3>
-
-
-<p>
-
-Gain experience for internships and future careers.
-
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-
-</section>
-
-
-
-
-
-</div>
-
-
-);
+  );
 
 
 }

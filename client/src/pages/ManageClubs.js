@@ -2,58 +2,57 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/api";
 
-import Codex from "../assets/Codex.jpg";
-import Gstudio from "../assets/Gstudio.jpg";
-import Starbursts from "../assets/Starbursts.jpg";
+
+function ManageClubs() {
 
 
-function ManageClubs(){
+  const [clubs, setClubs] = useState([]);
 
 
-  const [clubs,setClubs] = useState([]);
+  const [club, setClub] = useState({
 
-  const [club,setClub] = useState({
-
-    clubName:"",
-    description:"",
-    faculty:"",
-    recruitmentOpen:true
+    clubName: "",
+    description: "",
+    faculty: "",
+    recruitmentOpen: true
 
   });
 
 
-  const [image,setImage] = useState(null);
-
-  const [editId,setEditId] = useState(null);
+  const [image, setImage] = useState(null);
 
 
+  const [editId, setEditId] = useState(null);
 
-  useEffect(()=>{
+
+
+
+  useEffect(() => {
 
     fetchClubs();
 
-  },[]);
+  }, []);
 
 
 
 
 
-  function fetchClubs(){
+  function fetchClubs() {
 
     api
-    .get("/api/clubs")
+      .get("/api/clubs")
 
-    .then((res)=>{
+      .then((res) => {
 
-      setClubs(res.data);
+        setClubs(res.data);
 
-    })
+      })
 
-    .catch((err)=>{
+      .catch((err) => {
 
-      console.log(err);
+        console.log(err);
 
-    });
+      });
 
   }
 
@@ -62,13 +61,14 @@ function ManageClubs(){
 
 
 
-  function handleChange(e){
+
+  function handleChange(e) {
 
     setClub({
 
       ...club,
 
-      [e.target.name]:e.target.value
+      [e.target.name]: e.target.value
 
     });
 
@@ -79,7 +79,9 @@ function ManageClubs(){
 
 
 
-  function addOrUpdateClub(e){
+
+
+  function addOrUpdateClub(e) {
 
     e.preventDefault();
 
@@ -87,11 +89,11 @@ function ManageClubs(){
     const formData = new FormData();
 
 
-    formData.append("clubName",club.clubName);
+    formData.append("clubName", club.clubName);
 
-    formData.append("description",club.description);
+    formData.append("description", club.description);
 
-    formData.append("faculty",club.faculty);
+    formData.append("faculty", club.faculty);
 
     formData.append(
       "recruitmentOpen",
@@ -100,7 +102,7 @@ function ManageClubs(){
 
 
 
-    if(image){
+    if (image) {
 
       formData.append(
         "image",
@@ -113,7 +115,8 @@ function ManageClubs(){
 
 
 
-    if(editId){
+
+    if (editId) {
 
 
       api.put(
@@ -124,9 +127,9 @@ function ManageClubs(){
 
         {
 
-          headers:{
+          headers: {
 
-            "Content-Type":"multipart/form-data"
+            "Content-Type": "multipart/form-data"
 
           }
 
@@ -134,7 +137,7 @@ function ManageClubs(){
 
       )
 
-      .then(()=>{
+      .then(() => {
 
         alert("Club Updated");
 
@@ -145,9 +148,8 @@ function ManageClubs(){
       });
 
 
-    }
+    } else {
 
-    else{
 
 
       api.post(
@@ -158,9 +160,9 @@ function ManageClubs(){
 
         {
 
-          headers:{
+          headers: {
 
-            "Content-Type":"multipart/form-data"
+            "Content-Type": "multipart/form-data"
 
           }
 
@@ -168,7 +170,7 @@ function ManageClubs(){
 
       )
 
-      .then(()=>{
+      .then(() => {
 
         alert("Club Added");
 
@@ -190,12 +192,13 @@ function ManageClubs(){
 
 
 
-  function deleteClub(id){
+
+  function deleteClub(id) {
 
 
     api.delete(`/api/clubs/${id}`)
 
-    .then(()=>{
+    .then(() => {
 
       alert("Club Deleted");
 
@@ -212,18 +215,19 @@ function ManageClubs(){
 
 
 
-  function editClub(c){
+
+  function editClub(c) {
 
 
     setClub({
 
-      clubName:c.clubName,
+      clubName: c.clubName,
 
-      description:c.description,
+      description: c.description,
 
-      faculty:c.faculty,
+      faculty: c.faculty,
 
-      recruitmentOpen:c.recruitmentOpen
+      recruitmentOpen: c.recruitmentOpen
 
     });
 
@@ -239,17 +243,19 @@ function ManageClubs(){
 
 
 
-  function resetForm(){
+
+  function resetForm() {
+
 
     setClub({
 
-      clubName:"",
+      clubName: "",
 
-      description:"",
+      description: "",
 
-      faculty:"",
+      faculty: "",
 
-      recruitmentOpen:true
+      recruitmentOpen: true
 
     });
 
@@ -258,32 +264,6 @@ function ManageClubs(){
 
     setEditId(null);
 
-  }
-
-
-
-
-
-
-
-  function getImage(image){
-
-
-    if(image==="Codex.jpg")
-      return Codex;
-
-
-    if(image==="Gstudio.jpg")
-      return Gstudio;
-
-
-    if(image==="Starbursts.jpg")
-      return Starbursts;
-
-
-
-    return `http://localhost:3001/uploads/${image}`;
-
 
   }
 
@@ -293,313 +273,361 @@ function ManageClubs(){
 
 
 
-return(
 
-<div className="container mt-5">
+  // Image URL from Render backend
 
+  function getImage(image) {
 
-<h2 className="text-center mb-4">
-Manage Clubs
-</h2>
+    return image
 
+      ? `https://club-recruitment.onrender.com/uploads/${image}`
 
+      : "https://via.placeholder.com/300";
 
+  }
 
 
-<div className="card shadow p-4">
 
 
-<form onSubmit={addOrUpdateClub}>
 
 
-<input
 
-className="form-control mb-3"
 
-name="clubName"
+  return (
 
-value={club.clubName}
 
-onChange={handleChange}
+    <div className="container mt-5">
 
-placeholder="Club Name"
 
-required
 
-/>
+      <h2 className="text-center mb-4">
 
+        Manage Clubs
 
+      </h2>
 
 
 
-<textarea
 
-className="form-control mb-3"
 
-name="description"
 
-value={club.description}
+      <div className="card shadow p-4">
 
-onChange={handleChange}
 
-placeholder="Description"
 
-required
+        <form onSubmit={addOrUpdateClub}>
 
-/>
 
+          <input
 
+            className="form-control mb-3"
 
+            name="clubName"
 
+            value={club.clubName}
 
-<input
+            onChange={handleChange}
 
-className="form-control mb-3"
+            placeholder="Club Name"
 
-name="faculty"
+            required
 
-value={club.faculty}
+          />
 
-onChange={handleChange}
 
-placeholder="Faculty"
 
-required
 
-/>
+          <textarea
 
+            className="form-control mb-3"
 
+            name="description"
 
+            value={club.description}
 
+            onChange={handleChange}
 
-<input
+            placeholder="Description"
 
-type="file"
+            required
 
-className="form-control mb-3"
+          />
 
-onChange={(e)=>setImage(e.target.files[0])}
 
-/>
 
 
 
+          <input
 
+            className="form-control mb-3"
 
-<select
+            name="faculty"
 
-className="form-select mb-3"
+            value={club.faculty}
 
-value={club.recruitmentOpen}
+            onChange={handleChange}
 
-onChange={(e)=>
+            placeholder="Faculty"
 
-setClub({
+            required
 
-...club,
+          />
 
-recruitmentOpen:
-e.target.value==="true"
 
-})
 
-}
 
->
 
 
-<option value="true">
-Open
-</option>
+          <input
 
+            type="file"
 
-<option value="false">
-Closed
-</option>
+            className="form-control mb-3"
 
+            onChange={(e) => setImage(e.target.files[0])}
 
-</select>
+          />
 
 
 
 
 
 
-<button className="btn btn-primary w-100">
+          <select
 
-{
+            className="form-select mb-3"
 
-editId ?
+            value={club.recruitmentOpen}
 
-"Update Club"
+            onChange={(e) =>
 
-:
+              setClub({
 
-"Add Club"
+                ...club,
 
-}
+                recruitmentOpen:
+                  e.target.value === "true"
 
-</button>
+              })
 
+            }
 
-</form>
+          >
 
 
-</div>
+            <option value="true">
 
+              Open
 
+            </option>
 
 
+            <option value="false">
 
+              Closed
 
+            </option>
 
-<div className="row mt-4">
 
+          </select>
 
-{
 
-clubs.map((c)=>(
 
 
-<div
 
-className="col-md-4 mb-4"
 
-key={c._id}
+          <button className="btn btn-primary w-100">
 
->
 
+            {
 
-<div className="card shadow p-3">
+              editId
 
+              ?
 
+              "Update Club"
 
+              :
 
+              "Add Club"
 
-<img
+            }
 
-src={getImage(c.image)}
 
-alt={c.clubName}
+          </button>
 
-style={{
 
-height:"200px",
 
-width:"100%",
+        </form>
 
-objectFit:"cover"
 
-}}
 
+      </div>
 
-/>
 
 
 
 
 
-<h4 className="mt-3">
 
-{c.clubName}
 
-</h4>
 
+      <div className="row mt-4">
 
 
 
+        {
 
-<p>
+          clubs.map((c) => (
 
-{c.description}
 
-</p>
 
+            <div
 
+              className="col-md-4 mb-4"
 
+              key={c._id}
 
-<p>
+            >
 
-Faculty: {c.faculty}
 
-</p>
 
+              <div className="card shadow p-3">
 
 
 
 
 
-<button
+                <img
 
-className="btn btn-warning me-2"
+                  src={getImage(c.image)}
 
-onClick={()=>editClub(c)}
+                  alt={c.clubName}
 
->
+                  style={{
 
-Edit
+                    height: "200px",
 
-</button>
+                    width: "100%",
 
+                    objectFit: "cover"
 
+                  }}
 
+                />
 
 
 
-<button
 
-className="btn btn-danger"
 
-onClick={()=>deleteClub(c._id)}
 
->
+                <h4 className="mt-3">
 
-Delete
+                  {c.clubName}
 
-</button>
+                </h4>
 
 
 
 
 
 
-<Link
+                <p>
 
-to={`/admin/applicants/${c.clubName}`}
+                  {c.description}
 
-className="btn btn-primary mt-2 w-100"
+                </p>
 
->
 
-View Applicants
 
-</Link>
 
 
 
+                <p>
 
+                  Faculty: {c.faculty}
 
-</div>
+                </p>
 
 
-</div>
 
 
-))
 
 
-}
+                <button
 
+                  className="btn btn-warning me-2"
 
+                  onClick={() => editClub(c)}
 
-</div>
+                >
 
+                  Edit
 
+                </button>
 
-</div>
 
 
-);
+
+
+
+                <button
+
+                  className="btn btn-danger"
+
+                  onClick={() => deleteClub(c._id)}
+
+                >
+
+                  Delete
+
+                </button>
+
+
+
+
+
+
+
+                <Link
+
+                  to={`/admin/applicants/${c.clubName}`}
+
+                  className="btn btn-primary mt-2 w-100"
+
+                >
+
+                  View Applicants
+
+                </Link>
+
+
+
+
+
+              </div>
+
+
+            </div>
+
+
+
+          ))
+
+
+
+        }
+
+
+
+      </div>
+
+
+
+    </div>
+
+
+  );
 
 
 }
