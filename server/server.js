@@ -20,7 +20,7 @@ connectDB();
 
 app.use(cors({
     origin: [
-        "https://club-recruitment.vercel.app",
+        "https://club-recruitment-74mvmuz9b-shaikanas786s-projects.vercel.app",
         "http://localhost:3000"
     ],
     credentials: true
