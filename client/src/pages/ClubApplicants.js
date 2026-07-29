@@ -1,5 +1,11 @@
-import { useEffect, useState } from "react";
+import { 
+    useEffect, 
+    useState, 
+    useCallback 
+} from "react";
+
 import { useParams, Link } from "react-router-dom";
+
 import api from "../api/api";
 
 
@@ -14,37 +20,49 @@ function ClubApplicants(){
 
 
 
-    useEffect(()=>{
 
-        loadApplicants();
-
-    },[]);
-
-
-
-
-
-
-    function loadApplicants(){
+    const loadApplicants = useCallback(()=>{
 
 
         api
+
         .get(`/api/applications/club/${clubName}`)
 
         .then((res)=>{
 
+
             setApplications(res.data);
+
 
         })
 
         .catch((err)=>{
 
+
             console.log(err);
+
 
         });
 
 
-    }
+
+    },[clubName]);
+
+
+
+
+
+
+
+    useEffect(()=>{
+
+
+        loadApplicants();
+
+
+    },[loadApplicants]);
+
+
 
 
 
@@ -55,18 +73,25 @@ function ClubApplicants(){
     function updateStatus(id,status){
 
 
+
         api
+
         .put(`/api/applications/${id}`,{
+
 
             status:status
 
+
         })
+
 
         .then(()=>{
 
 
             alert(
+
                 `Application ${status}`
+
             );
 
 
@@ -74,6 +99,7 @@ function ClubApplicants(){
 
 
         })
+
 
         .catch((err)=>{
 
@@ -84,6 +110,7 @@ function ClubApplicants(){
         });
 
 
+
     }
 
 
@@ -92,294 +119,334 @@ function ClubApplicants(){
 
 
 
-    return(
 
+return(
 
-        <div className="container mt-5">
 
+<div className="container mt-5">
 
 
-            <h2 className="text-center mb-4">
 
-                {clubName} Applicants
+<h2 className="text-center mb-4">
 
-            </h2>
+{clubName} Applicants
 
+</h2>
 
 
 
 
-            <div className="card shadow">
 
 
-                <div className="card-body">
+<div className="card shadow">
 
 
+<div className="card-body">
 
-                {
 
-                applications.length===0 ?
 
 
-                (
 
-                    <h5 className="text-center">
+{
 
-                        No Applications Found
+applications.length===0 ?
 
-                    </h5>
 
-                )
+(
 
 
-                :
+<h5 className="text-center">
 
+No Applications Found
 
+</h5>
 
-                (
 
-                <table className="table table-hover">
+)
 
 
-                    <thead className="table-dark">
 
+:
 
-                        <tr>
 
-                            <th>
-                                Name
-                            </th>
 
-                            <th>
-                                Email
-                            </th>
+(
 
-                            <th>
-                                Phone
-                            </th>
 
-                            <th>
-                                Branch
-                            </th>
+<table className="table table-hover">
 
-                            <th>
-                                Year
-                            </th>
 
-                            <th>
-                                Reason
-                            </th>
+<thead className="table-dark">
 
-                            <th>
-                                Status
-                            </th>
 
-                            <th>
-                                Action
-                            </th>
+<tr>
 
 
-                        </tr>
+<th>Name</th>
 
+<th>Email</th>
 
-                    </thead>
+<th>Phone</th>
 
+<th>Branch</th>
 
+<th>Year</th>
 
+<th>Reason</th>
 
+<th>Status</th>
 
-                    <tbody>
+<th>Action</th>
 
 
-                    {
+</tr>
 
-                    applications.map((app)=>(
 
+</thead>
 
-                    <tr key={app._id}>
 
 
-                        <td>
-                            {app.studentName}
-                        </td>
 
 
+<tbody>
 
-                        <td>
-                            {app.studentEmail}
-                        </td>
 
 
+{
 
 
-                        <td>
-                            {app.phone}
-                        </td>
+applications.map((app)=>(
 
 
 
+<tr key={app._id}>
 
-                        <td>
-                            {app.branch}
-                        </td>
 
+<td>
 
+{app.studentName}
 
+</td>
 
-                        <td>
-                            {app.year}
-                        </td>
 
 
 
+<td>
 
-                        <td>
-                            {app.reason}
-                        </td>
+{app.studentEmail}
 
+</td>
 
 
 
 
-                        <td>
+<td>
 
+{app.phone}
 
-                        {
+</td>
 
-                        app.status==="Approved"
 
-                        ?
 
-                        <span className="badge bg-success">
-                            Approved
-                        </span>
 
+<td>
 
-                        :
+{app.branch}
 
+</td>
 
-                        app.status==="Rejected"
 
 
-                        ?
 
-                        <span className="badge bg-danger">
-                            Rejected
-                        </span>
+<td>
 
+{app.year}
 
-                        :
+</td>
 
 
-                        <span className="badge bg-warning">
-                            Pending
-                        </span>
 
 
-                        }
+<td>
 
+{app.reason}
 
-                        </td>
+</td>
 
 
 
 
 
 
-                        <td>
+<td>
 
 
-                        <button
+{
 
-                        className="btn btn-success btn-sm me-2"
 
-                        onClick={()=>updateStatus(
-                            app._id,
-                            "Approved"
-                        )}
+app.status==="Approved"
 
-                        >
 
-                            Approve
+?
 
-                        </button>
 
+<span className="badge bg-success">
 
+Approved
 
+</span>
 
 
-                        <button
 
-                        className="btn btn-danger btn-sm"
+:
 
-                        onClick={()=>updateStatus(
-                            app._id,
-                            "Rejected"
-                        )}
 
-                        >
+app.status==="Rejected"
 
-                            Reject
 
-                        </button>
 
+?
 
 
-                        </td>
+<span className="badge bg-danger">
 
+Rejected
 
+</span>
 
 
-                    </tr>
 
+:
 
-                    ))
 
-                    }
+<span className="badge bg-warning">
 
+Pending
 
-                    </tbody>
+</span>
 
 
 
-                </table>
+}
 
 
-                )
 
+</td>
 
-                }
 
 
 
 
 
-                <Link
 
-                to="/admin/clubs"
+<td>
 
-                className="btn btn-secondary"
 
-                >
+<button
 
-                    Back
+className="btn btn-success btn-sm me-2"
 
-                </Link>
+onClick={()=>updateStatus(
 
+app._id,
 
+"Approved"
 
+)}
 
-                </div>
+>
 
+Approve
 
-            </div>
+</button>
 
 
 
-        </div>
 
 
-    );
+
+
+<button
+
+className="btn btn-danger btn-sm"
+
+onClick={()=>updateStatus(
+
+app._id,
+
+"Rejected"
+
+)}
+
+>
+
+Reject
+
+</button>
+
+
+
+</td>
+
+
+
+
+
+</tr>
+
+
+
+))
+
+
+}
+
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+)
+
+
+}
+
+
+
+
+
+<Link
+
+to="/admin/clubs"
+
+className="btn btn-secondary"
+
+>
+
+Back
+
+</Link>
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+);
 
 
 }

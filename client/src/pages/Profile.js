@@ -19,25 +19,32 @@ function Profile() {
 
 
 
+
   useEffect(()=>{
 
 
     if(user){
 
 
-      api.get(
+      api
+
+      .get(
         `/api/applications/student/${user.email}`
       )
 
       .then((res)=>{
 
+
         setApplications(res.data);
+
 
       })
 
       .catch((err)=>{
 
+
         console.log(err);
+
 
       });
 
@@ -45,7 +52,9 @@ function Profile() {
     }
 
 
-  }, []);
+  }, [user]);
+
+
 
 
 
@@ -53,9 +62,12 @@ function Profile() {
 
   function logout(){
 
+
     localStorage.removeItem("user");
 
+
     navigate("/login");
+
 
   }
 
@@ -63,288 +75,340 @@ function Profile() {
 
 
 
-  return (
 
-    <div className="profile-page">
 
+return (
 
-      <div className="profile-card">
+<div className="profile-page">
 
 
-        <div className="profile-cover"></div>
+<div className="profile-card">
 
 
 
-        <div className="profile-image">
+<div className="profile-cover"></div>
 
 
-          {
-            user?.profileImage ?
 
-            <img
 
-              src={user.profileImage}
 
-              alt="Profile"
+<div className="profile-image">
 
-            />
 
-            :
+{
 
-            <div className="default-avatar">
+user?.profileImage ?
 
-              👤
 
-            </div>
+<img
 
-          }
+src={user.profileImage}
 
+alt="Profile"
 
-        </div>
+/>
 
 
+:
 
 
+<div className="default-avatar">
 
-        <div className="profile-body">
+👤
 
+</div>
 
-          <h2>
 
-            {user?.name}
+}
 
-          </h2>
 
+</div>
 
 
-          <span className="role-badge">
 
-            {user?.role}
 
-          </span>
 
 
+<div className="profile-body">
 
 
 
+<h2>
 
-          <div className="info-container">
+{user?.name}
 
+</h2>
 
-            <div className="info-card">
 
 
-              <h5>
-                📧 Email
-              </h5>
 
 
-              <p>
-                {user?.email}
-              </p>
+<span className="role-badge">
 
+{user?.role}
 
-            </div>
+</span>
 
 
 
 
 
-            <div className="info-card">
 
 
-              <h5>
-                🎓 Account Type
-              </h5>
+<div className="info-container">
 
 
-              <p>
 
-                {
-                  user?.role === "admin"
-                  ?
-                  "Administrator"
-                  :
-                  "Student"
-                }
+<div className="info-card">
 
-              </p>
 
+<h5>
 
-            </div>
+📧 Email
 
+</h5>
 
-          </div>
 
+<p>
 
+{user?.email}
 
+</p>
 
 
+</div>
 
 
-          {/* Applications */}
 
 
-          <div className="applications-section">
 
 
-            <h4>
 
-              📌 My Applications
+<div className="info-card">
 
-            </h4>
 
+<h5>
 
+🎓 Account Type
 
+</h5>
 
-            {
 
-              applications.length === 0 ?
+<p>
 
-              (
+{
 
-                <p className="text-muted">
+user?.role === "admin"
 
-                  No applications yet
+?
 
-                </p>
+"Administrator"
 
-              )
+:
 
+"Student"
 
-              :
+}
 
 
-              applications.map((app)=>(
+</p>
 
 
-                <div
+</div>
 
-                  className="application-card"
 
-                  key={app._id}
 
-                >
+</div>
 
 
-                  <h5>
 
-                    {app.clubName}
 
-                  </h5>
 
 
 
-                  {
 
-                    app.status === "Approved" &&
 
-                    <span className="badge bg-success">
+<div className="applications-section">
 
-                      Approved
 
-                    </span>
+<h4>
 
-                  }
+📌 My Applications
 
+</h4>
 
 
 
-                  {
 
-                    app.status === "Pending" &&
 
-                    <span className="badge bg-warning text-dark">
+{
 
-                      Pending
+applications.length === 0 ?
 
-                    </span>
 
-                  }
+(
 
 
+<p className="text-muted">
 
+No applications yet
 
+</p>
 
-                  {
 
-                    app.status === "Rejected" &&
+)
 
-                    <span className="badge bg-danger">
 
-                      Rejected
 
-                    </span>
+:
 
-                  }
 
+applications.map((app)=>(
 
 
-                </div>
+<div
 
+className="application-card"
 
-              ))
+key={app._id}
 
+>
 
-            }
 
+<h5>
 
-          </div>
+{app.clubName}
 
+</h5>
 
 
 
 
 
+{
 
-          <div className="profile-actions">
+app.status === "Approved" &&
 
+<span className="badge bg-success">
 
-            <button
+Approved
 
-              className="edit-profile"
+</span>
 
-              onClick={() =>
-                navigate("/edit-profile")
-              }
+}
 
-            >
 
-              ✏ Edit Profile
 
-            </button>
 
 
+{
 
+app.status === "Pending" &&
 
+<span className="badge bg-warning text-dark">
 
-            <button
+Pending
 
-              className="logout-profile"
+</span>
 
-              onClick={logout}
+}
 
-            >
 
-              Logout
 
-            </button>
 
 
+{
 
-          </div>
+app.status === "Rejected" &&
 
+<span className="badge bg-danger">
 
+Rejected
 
-        </div>
+</span>
 
+}
 
-      </div>
 
 
-    </div>
 
-  );
+
+</div>
+
+
+))
+
+
+}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div className="profile-actions">
+
+
+
+<button
+
+className="edit-profile"
+
+onClick={()=>navigate("/edit-profile")}
+
+>
+
+✏ Edit Profile
+
+</button>
+
+
+
+
+
+
+
+<button
+
+className="logout-profile"
+
+onClick={logout}
+
+>
+
+Logout
+
+</button>
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+);
+
 
 }
 

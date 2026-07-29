@@ -1,4 +1,9 @@
-import { useEffect, useState } from "react";
+import { 
+    useEffect, 
+    useState, 
+    useCallback 
+} from "react";
+
 import api from "../api/api";
 
 
@@ -19,20 +24,7 @@ const [open,setOpen] = useState(false);
 
 
 
-useEffect(()=>{
-
-
-    loadNotifications();
-
-
-},[]);
-
-
-
-
-
-
-function loadNotifications(){
+const loadNotifications = useCallback(()=>{
 
 
     if(user?.email){
@@ -65,7 +57,22 @@ function loadNotifications(){
     }
 
 
-}
+},[user]);
+
+
+
+
+
+
+
+useEffect(()=>{
+
+
+    loadNotifications();
+
+
+},[loadNotifications]);
+
 
 
 
@@ -217,9 +224,7 @@ open && (
 
 className="card shadow"
 
-style={
-
-{
+style={{
 
 position:"absolute",
 
@@ -231,15 +236,9 @@ width:"350px",
 
 zIndex:1000
 
-}
-
-}
-
+}}
 
 >
-
-
-
 
 
 <div className="card-header fw-bold">
@@ -279,7 +278,6 @@ No Notifications
 
 
 :
-
 
 
 notifications.map((item)=>(
