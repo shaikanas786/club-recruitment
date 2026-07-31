@@ -114,14 +114,18 @@ function EditProfile() {
               </div>
 
               <div className="mb-3">
-                <label>Profile Image</label>
-                <input
-                  type="file"
-                  className="form-control"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-              </div>
+
+  <label>Profile Image</label>
+
+  <input
+    type="file"
+    className="form-control"
+    name="profileImage"
+    accept="image/*"
+    onChange={handleFileChange}
+  />
+
+</div>
 
               <button
                 className="btn btn-primary w-100"
