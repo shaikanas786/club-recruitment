@@ -2,7 +2,18 @@ const express = require("express");
 const router = express.Router();
 
 const User = require("../models/User");
+const multer = require("multer");
+const path = require("path");
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
 
+const upload = multer({ storage });
 
 
 // ======================
@@ -325,148 +336,73 @@ router.post("/login", async(req,res)=>{
 // Update Profile
 // ======================
 
+router.put("/update/:id", upload.single("profileImage"), async (req, res) => {
 
-router.put("/update/:id", async(req,res)=>{
+  try {
 
-
-  try{
-
-
-    const {
+    const { name, email, password } = req.body;
 
 
+    const updateData = {
       name,
-
-      email,
-
-      password,
-
-      profileImage
-
-
-    } = req.body;
-
-
-
-
-
-
-    const updateData={
-
-
-      name,
-
-      email,
-
-      profileImage
-
-
+      email
     };
 
 
-
-
-
-
-
-    if(password && password.trim()!==""){
-
-
-      updateData.password=password;
-
-
+    if (req.file) {
+      updateData.profileImage = req.file.filename;
     }
 
 
-
-
+    if (password && password.trim() !== "") {
+      updateData.password = password;
+    }
 
 
 
     const updatedUser = await User.findByIdAndUpdate(
-
-
       req.params.id,
-
-
       updateData,
-
-
       {
-
-        new:true
-
+        new: true
       }
-
-
     );
 
 
 
-
-
-
-
-    if(!updatedUser){
-
+    if (!updatedUser) {
 
       return res.status(404).json({
-
-        message:"User not found"
-
+        message: "User not found"
       });
 
-
     }
-
-
-
-
-
 
 
 
     res.json({
 
+      message: "Profile Updated",
 
-      message:"Profile Updated",
+      user: {
 
+        _id: updatedUser._id,
 
+        name: updatedUser.name,
 
-      user:{
+        email: updatedUser.email,
 
+        role: updatedUser.role,
 
-        _id:updatedUser._id,
-
-
-        name:updatedUser.name,
-
-
-        email:updatedUser.email,
-
-
-        role:updatedUser.role,
-
-
-        profileImage:updatedUser.profileImage
-
+        profileImage: updatedUser.profileImage
 
       }
-
-
 
     });
 
 
 
-
-
-
-
-  }
-
-
-  catch(error){
+  } catch(error) {
 
 
     console.log(error);
@@ -474,18 +410,14 @@ router.put("/update/:id", async(req,res)=>{
 
     res.status(500).json({
 
-      message:"Update Failed"
+      message: "Update Failed"
 
     });
 
 
   }
 
-
-
 });
-
-
 
 
 
